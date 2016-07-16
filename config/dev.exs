@@ -25,8 +25,8 @@ config :phoenix, :stacktrace_depth, 20
 # Configure your database
 config :reviewMyCode, ReviewMyCode.Repo,
   adapter: Ecto.Adapters.Postgres,
-  username: "postgres",
-  password: "postgres",
-  database: "reviewmycode_dev",
+  username: System.get_env("POSTGRES_USER"),
+  password: System.get_env("POSTGRES_PASSWORD"),
+  database: System.get_env("POSTGRES_DATABASE"),
   hostname: "localhost",
   pool_size: 10

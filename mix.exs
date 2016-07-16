@@ -4,7 +4,7 @@ defmodule ReviewMyCode.Mixfile do
   def project do
     [app: :reviewMyCode,
      version: "0.0.1",
-     elixir: "~> 1.0",
+     elixir: "~> 1.2",
      elixirc_paths: elixirc_paths(Mix.env),
      compilers: [:phoenix] ++ Mix.compilers,
      build_embedded: Mix.env == :prod,
@@ -18,8 +18,25 @@ defmodule ReviewMyCode.Mixfile do
   # Type `mix help compile.app` for more information.
   def application do
     [mod: {ReviewMyCode, []},
-     applications: [:phoenix, :cowboy, :logger,
-                    :phoenix_ecto, :postgrex]]
+     applications: applications(Mix.env)]
+  end
+
+  def applications(env) when env in [:test] do
+    applications(:default) ++ [:ex_machina]
+  end
+
+  def applications(_) do
+    [
+      :cowboy,
+      :ecto,
+      :logger,
+      # :oauth2,
+      :phoenix,
+      :phoenix_ecto,
+      :postgrex,
+      :ueberauth,
+      :ueberauth_github
+    ]
   end
 
   # Specifies which paths to compile per environment.
@@ -30,9 +47,15 @@ defmodule ReviewMyCode.Mixfile do
   #
   # Type `mix help deps` for examples and options.
   defp deps do
-    [{:phoenix, "~> 1.0.3"},
-     {:phoenix_ecto, "~> 1.1"},
-     {:postgrex, ">= 0.0.0"},
+    [{:phoenix, "~> 1.2.0"},
+     {:ecto, "~> 2.0.2", override: true},
+     {:ex_machina, "~>0.6", only: [:dev, :test]},
+     {:ueberauth, "~>0.2.0", override: true},
+     {:ueberauth_github, "~>0.2.0"},
+     {:guardian, "~> 0.12.0"},
+     {:guardian_db, "~> 0.7"},
+     {:phoenix_ecto, "~> 3.0"},
+     {:postgrex, ">= 0.11.2", override: true},
      {:cowboy, "~> 1.0"}]
   end
 

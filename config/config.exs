@@ -19,11 +19,42 @@ config :logger, :console,
   format: "$time $metadata[$level] $message\n",
   metadata: [:request_id]
 
-# Import environment specific config. This must remain at the bottom
-# of this file so it overrides the configuration defined above.
-import_config "#{Mix.env}.exs"
-
 # Configure phoenix generators
 config :phoenix, :generators,
   migration: true,
   binary_id: false
+
+config :reviewMyCode, ecto_repos: [ReviewMyCode.Repo]
+
+config :guardian, Guardian,
+  issuer: "ReviewMyCode.#{Mix.env}",
+  ttl: {30, :days},
+  verify_issuer: true,
+  serializer: ReviewMyCode.GuardianSerializer,
+  secret_key: to_string(System.get_env("GUARDIAN_SECRET")),
+  hooks: GuardianDb,
+  permissions: %{
+    default: [
+      :read_profile,
+      :write_profile,
+      :read_token,
+      :revoke_token,
+    ],
+  }
+
+config :ueberauth, Ueberauth,
+  providers: [
+    github: {Ueberauth.Strategy.Github, [uid_field: "login"]}
+  ]
+
+config :ueberauth, Ueberauth.Strategy.Github.OAuth,
+  client_id: System.get_env("GITHUB_CLIENT_ID"),
+  client_secret: System.get_env("GITHUB_CLIENT_SECRET")
+
+config :guardian_db, GuardianDb,
+  repo: ReviewMyCode.Repo,
+  sweep_interval: 60 # 60 minutes
+
+# Import environment specific config. This must remain at the bottom
+# of this file so it overrides the configuration defined above.
+import_config "#{Mix.env}.exs"

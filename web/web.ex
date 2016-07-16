@@ -18,7 +18,7 @@ defmodule ReviewMyCode.Web do
 
   def model do
     quote do
-      use Ecto.Model
+      use Ecto.Schema
 
       import Ecto.Changeset
       import Ecto.Query, only: [from: 1, from: 2]
@@ -28,12 +28,17 @@ defmodule ReviewMyCode.Web do
   def controller do
     quote do
       use Phoenix.Controller
+      use Guardian.Phoenix.Controller
 
       alias ReviewMyCode.Repo
-      import Ecto.Model
+      alias Guardian.Plug.EnsureAuthenticated
+      alias Guardian.Plug.EnsurePermissions
+
+      import Ecto.Schema
       import Ecto.Query, only: [from: 1, from: 2]
 
       import ReviewMyCode.Router.Helpers
+      import ReviewMyCode.Controller.Helpers
     end
   end
 
@@ -51,16 +56,6 @@ defmodule ReviewMyCode.Web do
   def router do
     quote do
       use Phoenix.Router
-    end
-  end
-
-  def channel do
-    quote do
-      use Phoenix.Channel
-
-      alias ReviewMyCode.Repo
-      import Ecto.Model
-      import Ecto.Query, only: [from: 1, from: 2]
     end
   end
 

@@ -12,8 +12,8 @@ config :logger, level: :warn
 # Configure your database
 config :reviewMyCode, ReviewMyCode.Repo,
   adapter: Ecto.Adapters.Postgres,
-  username: "postgres",
-  password: "postgres",
-  database: "reviewmycode_test",
+  username: System.get_env("POSTGRES_USER"),
+  password: System.get_env("POSTGRES_PASSWORD"),
+  database: System.get_env("POSTGRES_DATABASE"),
   hostname: "localhost",
   pool: Ecto.Adapters.SQL.Sandbox

@@ -1,7 +1,7 @@
 defmodule ReviewMyCode.Endpoint do
   use Phoenix.Endpoint, otp_app: :reviewMyCode
 
-  socket "/socket", ReviewMyCode.UserSocket
+  # socket "/socket", ReviewMyCode.UserSocket
 
   # Serve at "/" the static files from "priv/static" directory.
   #
