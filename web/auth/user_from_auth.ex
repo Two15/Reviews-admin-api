@@ -1,7 +1,6 @@
 defmodule ReviewMyCode.UserFromAuth do
   alias ReviewMyCode.User
   alias ReviewMyCode.Authorization
-  alias Ueberauth.Auth
 
   def get_or_insert(auth, current_user, repo) do
     case auth_and_validate(auth, repo) do

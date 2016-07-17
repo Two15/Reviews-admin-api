@@ -38,7 +38,6 @@ defmodule ReviewMyCode.Web do
       import Ecto.Query, only: [from: 1, from: 2]
 
       import ReviewMyCode.Router.Helpers
-      import ReviewMyCode.Controller.Helpers
     end
   end
 
