@@ -48,6 +48,7 @@ defmodule ReviewMyCode.Mixfile do
   # Type `mix help deps` for examples and options.
   defp deps do
     [{:phoenix, "~> 1.2.0"},
+     {:corsica, "~> 0.4"},
      {:ecto, "~> 2.0.2", override: true},
      {:ex_machina, "~>0.6", only: [:dev, :test]},
      {:ueberauth, "~>0.2.0", override: true},
