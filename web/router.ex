@@ -13,18 +13,23 @@ defmodule ReviewMyCode.Router do
     plug Guardian.Plug.LoadResource
   end
 
+  scope "/", ReviewMyCode do
+    pipe_through [:api]
+
+    get "/", PingController, :ping
+  end
+
   # This scope is the main authentication area for Ueberauth
   scope "/auth", ReviewMyCode do
     pipe_through [:api]
 
     get "/:identity", AuthController, :login
     get "/:identity/callback", AuthController, :callback
-    post "/:identity/callback", AuthController, :callback
   end
 
   scope "/api", ReviewMyCode do
     pipe_through [:api, :api_auth]
 
-    get "/", IndexController, :index
+    get "/", PingController, :ping
   end
 end
