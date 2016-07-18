@@ -11,6 +11,11 @@ defmodule ReviewMyCode.Router do
   pipeline :api_auth do
     plug Guardian.Plug.VerifyHeader, realm: "Bearer"
     plug Guardian.Plug.LoadResource
+    plug Guardian.Plug.EnsureAuthenticated
+  end
+
+  pipeline :api_public do
+    plug Guardian.Plug.EnsureNotAuthenticated
   end
 
   scope "/", ReviewMyCode do
@@ -19,12 +24,17 @@ defmodule ReviewMyCode.Router do
     get "/", PingController, :ping
   end
 
-  # This scope is the main authentication area for Ueberauth
   scope "/auth", ReviewMyCode do
-    pipe_through [:api]
+    pipe_through [:api, :api_public]
 
-    get "/:identity", AuthController, :login
-    get "/:identity/callback", AuthController, :callback
+    get "/", AuthController, :index
+    get "/token", AuthController, :callback
+  end
+
+  scope "/auth/logout", ReviewMyCode do
+    pipe_through [:api, :api_auth]
+
+    delete "/", TokenController, :revoke
   end
 
   scope "/api", ReviewMyCode do

@@ -30,12 +30,10 @@ defmodule ReviewMyCode.Mixfile do
       :cowboy,
       :ecto,
       :logger,
-      # :oauth2,
+      :oauth2,
       :phoenix,
       :phoenix_ecto,
-      :postgrex,
-      :ueberauth,
-      :ueberauth_github
+      :postgrex
     ]
   end
 
@@ -51,8 +49,7 @@ defmodule ReviewMyCode.Mixfile do
      {:corsica, "~> 0.4"},
      {:ecto, "~> 2.0.2", override: true},
      {:ex_machina, "~>0.6", only: [:dev, :test]},
-     {:ueberauth, "~>0.2.0", override: true},
-     {:ueberauth_github, "~>0.2.0"},
+     {:oauth2, "~> 0.6"},
      {:guardian, "~> 0.12.0"},
      {:guardian_db, "~> 0.7"},
      {:phoenix_ecto, "~> 3.0"},

@@ -42,14 +42,11 @@ config :guardian, Guardian,
     ],
   }
 
-config :ueberauth, Ueberauth,
-  providers: [
-    github: {Ueberauth.Strategy.Github, [uid_field: "login"]}
-  ]
-
-config :ueberauth, Ueberauth.Strategy.Github.OAuth,
+config :oauth2, ReviewMyCode.OAuth,
   client_id: System.get_env("GITHUB_CLIENT_ID"),
-  client_secret: System.get_env("GITHUB_CLIENT_SECRET")
+  client_secret: System.get_env("GITHUB_CLIENT_SECRET"),
+  redirect_uri: "http://localhost:4200/login/response",
+  default_scope: "user:email,repo:status,write:repo_hook,notifications"
 
 config :guardian_db, GuardianDb,
   repo: ReviewMyCode.Repo,

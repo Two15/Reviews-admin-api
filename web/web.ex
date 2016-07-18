@@ -28,16 +28,20 @@ defmodule ReviewMyCode.Web do
   def controller do
     quote do
       use Phoenix.Controller
-      use Guardian.Phoenix.Controller
 
       alias ReviewMyCode.Repo
-      alias Guardian.Plug.EnsureAuthenticated
-      alias Guardian.Plug.EnsurePermissions
 
       import Ecto.Schema
       import Ecto.Query, only: [from: 1, from: 2]
 
       import ReviewMyCode.Router.Helpers
+    end
+  end
+
+  def authenticated_controller do
+    quote do
+      use ReviewMyCode.Web, :controller
+      use Guardian.Phoenix.Controller
     end
   end
 

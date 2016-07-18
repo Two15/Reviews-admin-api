@@ -19,7 +19,7 @@ defmodule ReviewMyCode.Endpoint do
 
   plug Plug.RequestId
   plug Plug.Logger
-  plug Corsica, origins: "http://localhost:4200"
+  plug Corsica, origins: "http://localhost:4200", allow_headers: ~w(accept authorization)
 
   plug Plug.Parsers,
     parsers: [:urlencoded, :multipart, :json],

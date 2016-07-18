@@ -1,7 +1,9 @@
 defmodule ReviewMyCode.PingController do
-  use ReviewMyCode.Web, :controller
+  use ReviewMyCode.Web, :authenticated_controller
 
-  def ping(conn, _params, user, _claims) do
+  def ping(conn, _, user, _), do: ping(conn, user)
+
+  defp ping(conn, user) do
     conn
     |>json(%{status: status(user)})
   end
@@ -9,4 +11,3 @@ defmodule ReviewMyCode.PingController do
   defp status(nil), do: "unauthenticated"
   defp status(_), do: "authenticated"
 end
-
