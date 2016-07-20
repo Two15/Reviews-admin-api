@@ -6,7 +6,6 @@ defmodule ReviewMyCode.User do
   schema "users" do
     field :name, :string
     field :email, :string
-    field :is_admin, :boolean
 
     has_many :authorizations, ReviewMyCode.Authorization
 
@@ -33,11 +32,5 @@ defmodule ReviewMyCode.User do
     |> cast(params, @required_fields ++ @optional_fields)
     |> validate_required(@required_fields)
     |> validate_format(:email, ~r/@/)
-  end
-
-  def make_admin!(user) do
-    user
-    |> cast(%{is_admin: true}, ~w(is_admin)a)
-    |> Repo.update!
   end
 end
