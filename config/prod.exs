@@ -56,6 +56,10 @@ config :logger, level: :info
 #     config :reviewMyCode, ReviewMyCode.Endpoint, server: true
 #
 
+config :guardian, Guardian,
+  issuer: "Two15 - ReviewMyCode",
+  ttl: {1, :days},
+
 # Finally import the config/prod.secret.exs
 # which should be versioned separately.
 import_config "prod.secret.exs"
