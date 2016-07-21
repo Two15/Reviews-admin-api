@@ -3,6 +3,7 @@ defmodule ReviewMyCode.User do
 
   alias ReviewMyCode.Repo
 
+  @primary_key {:id, :binary_id, autogenerate: true}
   schema "users" do
     field :name, :string
     field :email, :string

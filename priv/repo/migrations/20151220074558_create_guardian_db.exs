@@ -7,10 +7,13 @@ defmodule ReviewMyCode.Repo.Migrations.CreateGuardianDb do
       add :aud, :string
       add :iss, :string
       add :sub, :string
+      add :typ, :string
       add :exp, :bigint
       add :jwt, :text
       add :claims, :map
       timestamps
     end
+
+    create index(:guardian_tokens, [:typ])
   end
 end

@@ -1,22 +1,19 @@
 defmodule ReviewMyCode.Authorization do
   use ReviewMyCode.Web, :model
 
+  @primary_key {:id, :binary_id, autogenerate: true}
   schema "authorizations" do
     field :provider, :string
     field :uid, :string
     field :token, :string
-    field :refresh_token, :string
-    field :expires_at, :integer
-    field :password, :string, virtual: true
-    field :password_confirmation, :string, virtual: true
 
-    belongs_to :user, ReviewMyCode.User
+    belongs_to :user, ReviewMyCode.User, type: :binary_id
 
     timestamps
   end
 
   @required_fields ~w(provider uid user_id token)a
-  @optional_fields ~w(refresh_token expires_at)a
+  @optional_fields ~w()
 
   @doc """
   Creates a changeset based on the `model` and `params`.
