@@ -1,8 +1,15 @@
 defmodule ReviewMyCode.UserFromAuth do
+  @moduledoc """
+  The JWT sent alongside the requests refer to an authorization.
+  This authorization refers to a User.
+
+  This module provides the necessary mechanism of making sure that
+  with an authorization comes a user.
+  """
   alias ReviewMyCode.User
   alias ReviewMyCode.Authorization
 
-  def get_or_insert(%{ info: info, uid: uid, provider: provider } = auth, repo) do
+  def get_or_insert(%{uid: uid, provider: provider} = auth, repo) do
     case auth_and_validate(uid, provider, repo) do
       {:error, :not_found} -> register_user_from_auth(auth, repo)
       {:error, reason} -> {:error, reason}
@@ -46,15 +53,18 @@ defmodule ReviewMyCode.UserFromAuth do
 
   defp create_user_from_auth(auth, repo) do
     email = Map.get(auth.info, "email")
-    user = repo.get_by(User, email: email)
-    if !user, do: user = create_user(auth, repo)
+    user = case repo.get_by(User, email: email) do
+      nil -> create_user(auth, repo)
+      user -> user
+    end
     authorization_from_auth(user, auth, repo)
     {:ok, user}
   end
 
-  defp create_user(%{ "info": info }, repo) do
+  defp create_user(%{"info": info}, repo) do
     name = name_from_auth(info)
-    result = User.registration_changeset(%User{}, scrub(%{email: Map.get(info, "email"), name: name}))
+    result = %User{}
+    |> User.registration_changeset(scrub(%{email: Map.get(info, "email"), name: name}))
     |> repo.insert
     case result do
       {:ok, user} -> user
@@ -76,8 +86,8 @@ defmodule ReviewMyCode.UserFromAuth do
 
   defp authorization_from_auth(user, auth, repo) do
     authorization = Ecto.build_assoc(user, :authorizations)
-    result = Authorization.changeset(
-      authorization,
+    result = authorization
+    |> Authorization.changeset(
       scrub(
         %{
           provider: to_string(auth.provider),
@@ -87,7 +97,8 @@ defmodule ReviewMyCode.UserFromAuth do
           expires_at: auth.token.expires_at
         }
       )
-    ) |> repo.insert
+    )
+    |> repo.insert
 
     case result do
       {:ok, the_auth} -> the_auth
@@ -95,16 +106,16 @@ defmodule ReviewMyCode.UserFromAuth do
     end
   end
 
-  defp name_from_auth(%{ "name" => name }), do: name
+  defp name_from_auth(%{"name" => name}), do: name
 
   # We don't have any nested structures in our params that we are using scrub with so this is a very simple scrub
   defp scrub(params) do
-    result = Enum.filter(params, fn
-      {key, val} when is_binary(val) -> String.strip(val) != ""
-      {key, val} when is_nil(val) -> false
+    params
+    |> Enum.filter(fn
+      {_, val} when is_binary(val) -> String.strip(val) != ""
+      {_, val} when is_nil(val) -> false
       _ -> true
     end)
     |> Enum.into(%{})
-    result
   end
 end

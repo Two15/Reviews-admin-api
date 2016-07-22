@@ -5,7 +5,7 @@ defmodule ReviewMyCode.PingController do
 
   defp ping(conn, user) do
     conn
-    |>json(%{status: status(user)})
+    |> json(%{status: status(user)})
   end
 
   defp status(nil), do: "unauthenticated"

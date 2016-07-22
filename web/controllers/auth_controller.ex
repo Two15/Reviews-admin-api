@@ -11,16 +11,16 @@ defmodule ReviewMyCode.AuthController do
 
   def index(conn, _params) do
     conn
-    |> redirect external: OAuth.authorize_url!()
+    |> redirect(external: OAuth.authorize_url!())
   end
 
-  def callback(conn, %{ "error" => error } = params) do
+  def callback(conn, %{"error" => error}) do
     conn
     # TODO Redirect to the app with a proper error message
-    |> json(%{"errors": [params]})
+    |> json(%{"errors": [error]})
   end
 
-  def callback(conn, %{ "code" => code } = params) do
+  def callback(conn, %{"code" => code}) do
     case OAuth.get_token!(code: code) do
       {:ok, token} ->
         auth = get_user!(token)
@@ -45,10 +45,10 @@ defmodule ReviewMyCode.AuthController do
         jwt = Guardian.Plug.current_token(new_conn)
 
         new_conn
-        |> json(%{ access_token: jwt })
+        |> json(%{access_token: jwt})
       {:error, reason} ->
         conn
-        |> json(%{ "errors": [reason] })
+        |> json(%{"errors": [reason]})
     end
   end
 end

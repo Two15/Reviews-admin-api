@@ -1,4 +1,7 @@
 defmodule ReviewMyCode.Router do
+  @moduledoc """
+  Defines the routes of the API
+  """
   use ReviewMyCode.Web, :router
 
   pipeline :api do

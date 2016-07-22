@@ -1,4 +1,5 @@
 defmodule ReviewMyCode.GuardianToken do
+  @moduledoc false
   use ReviewMyCode.Web, :model
 
   alias ReviewMyCode.Repo

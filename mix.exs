@@ -47,6 +47,7 @@ defmodule ReviewMyCode.Mixfile do
   defp deps do
     [{:phoenix, "~> 1.2.0"},
      {:corsica, "~> 0.4"},
+     {:credo, "~> 0.4", only: [:dev, :test]},
      # was ecto 2.0.2
      {:ecto, github: "elixir-ecto/ecto", ref: "c89754c65678", override: true},
      {:ex_machina, "~>0.6", only: [:dev, :test]},

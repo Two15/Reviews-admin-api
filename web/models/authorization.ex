@@ -1,5 +1,6 @@
 defmodule ReviewMyCode.Authorization do
   use ReviewMyCode.Web, :model
+  @moduledoc false
 
   @primary_key {:id, :binary_id, autogenerate: true}
   schema "authorizations" do

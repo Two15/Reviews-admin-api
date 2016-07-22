@@ -1,4 +1,7 @@
 defmodule ReviewMyCode.OAuth do
+  @moduledoc """
+  Handles authentication with the Oauth2 Provider (Github)
+  """
   use OAuth2.Strategy
 
   # Public API
@@ -24,24 +27,24 @@ defmodule ReviewMyCode.OAuth do
   # you can pass options to the underlying http library via `options` parameter
   def get_token!(params \\ [], headers \\ [], options \\ []) do
     case OAuth2.Client.get_token(client(), params, headers, options) do
-      { :ok, %{ access_token: nil, other_params: error } } -> {:error, error}
-      { :ok, token } -> {:ok, token}
-      { :error, error } -> {:error, error}
+      {:ok, %{access_token: nil, other_params: error}} -> {:error, error}
+      {:ok, token} -> {:ok, token}
+      {:error, error} -> {:error, error}
     end
   end
 
   # Strategy Callbacks
 
-  def authorize_url(client, params) do
-    OAuth2.Strategy.AuthCode.authorize_url(client, params)
+  def authorize_url(conn, params) do
+    OAuth2.Strategy.AuthCode.authorize_url(conn, params)
   end
 
-  def get_token(client, params, headers) do
-    client
+  def get_token(auth_client, params, headers) do
+    auth_client
     |> put_header("Accept", "application/json")
     |> OAuth2.Strategy.AuthCode.get_token(params, headers)
   end
 
-  def uid(%{ "login"=> login }), do: login
+  def uid(%{"login"=> login}), do: login
 
 end

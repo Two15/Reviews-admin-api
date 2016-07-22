@@ -1,7 +1,6 @@
 defmodule ReviewMyCode.User do
+  @moduledoc false
   use ReviewMyCode.Web, :model
-
-  alias ReviewMyCode.Repo
 
   @primary_key {:id, :binary_id, autogenerate: true}
   schema "users" do
@@ -18,7 +17,7 @@ defmodule ReviewMyCode.User do
 
   def registration_changeset(model, params \\ :empty) do
     model
-    |>cast(params, ~w(email name)a)
+    |> cast(params, ~w(email name))
     |> validate_required(@required_fields)
   end
 
