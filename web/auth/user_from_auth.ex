@@ -14,32 +14,13 @@ defmodule ReviewMyCode.UserFromAuth do
       {:error, :not_found} -> register_user_from_auth(auth, repo)
       {:error, reason} -> {:error, reason}
       authorization ->
-        if authorization.expires_at && authorization.expires_at < Guardian.Utils.timestamp do
-          replace_authorization(authorization, auth, repo)
-        else
-          user_from_authorization(authorization, repo)
-        end
+        user_from_authorization(authorization, repo)
     end
   end
 
   defp register_user_from_auth(auth, repo) do
     case repo.transaction(fn -> create_user_from_auth(auth, repo) end) do
       {:ok, response} -> response
-      {:error, reason} -> {:error, reason}
-    end
-  end
-
-  defp replace_authorization(authorization, auth, repo) do
-    case user_from_authorization(authorization, repo) do
-      {:ok, user} ->
-        case repo.transaction(fn ->
-          repo.delete(authorization)
-          authorization_from_auth(user, auth, repo)
-          user
-        end) do
-          {:ok, user} -> {:ok, user}
-          {:error, reason} -> {:error, reason}
-        end
       {:error, reason} -> {:error, reason}
     end
   end
@@ -92,9 +73,7 @@ defmodule ReviewMyCode.UserFromAuth do
         %{
           provider: to_string(auth.provider),
           uid: auth.uid,
-          token: auth.token.access_token,
-          refresh_token: auth.token.refresh_token,
-          expires_at: auth.token.expires_at
+          token: auth.token.access_token
         }
       )
     )
