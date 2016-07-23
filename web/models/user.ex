@@ -6,6 +6,7 @@ defmodule ReviewMyCode.User do
   schema "users" do
     field :name, :string
     field :email, :string
+    field :avatar_url, :string
 
     has_many :authorizations, ReviewMyCode.Authorization
 
@@ -13,11 +14,11 @@ defmodule ReviewMyCode.User do
   end
 
   @required_fields ~w(email name)a
-  @optional_fields ~w()a
+  @optional_fields ~w(avatar_url)a
 
   def registration_changeset(model, params \\ :empty) do
     model
-    |> cast(params, ~w(email name))
+    |> cast(params, @required_fields ++ @optional_fields)
     |> validate_required(@required_fields)
   end
 
@@ -32,5 +33,10 @@ defmodule ReviewMyCode.User do
     |> cast(params, @required_fields ++ @optional_fields)
     |> validate_required(@required_fields)
     |> validate_format(:email, ~r/@/)
+  end
+
+  def auth_for(user, provider) do
+    user.authorizations
+    |> Enum.find(fn(%{ provider: prov })-> prov == to_string(provider) end)
   end
 end

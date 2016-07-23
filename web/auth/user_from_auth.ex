@@ -43,9 +43,9 @@ defmodule ReviewMyCode.UserFromAuth do
   end
 
   defp create_user(%{"info": info}, repo) do
-    name = name_from_auth(info)
+    %{ "name"=> name, "email"=> email, "avatar_url"=> avatar_url } = info;
     result = %User{}
-    |> User.registration_changeset(scrub(%{email: Map.get(info, "email"), name: name}))
+    |> User.registration_changeset(scrub(%{email: email, name: name, avatar_url: avatar_url}))
     |> repo.insert
     case result do
       {:ok, user} -> user
@@ -84,8 +84,6 @@ defmodule ReviewMyCode.UserFromAuth do
       {:error, reason} -> repo.rollback(reason)
     end
   end
-
-  defp name_from_auth(%{"name" => name}), do: name
 
   # We don't have any nested structures in our params that we are using scrub with so this is a very simple scrub
   defp scrub(params) do
