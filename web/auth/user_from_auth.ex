@@ -43,9 +43,11 @@ defmodule ReviewMyCode.UserFromAuth do
   end
 
   defp create_user(%{"info": info}, repo) do
-    %{ "name"=> name, "email"=> email, "avatar_url"=> avatar_url } = info;
+    changeset = info
+    |> Map.take(["name", "email", "avatar_url"])
+    |> scrub
     result = %User{}
-    |> User.registration_changeset(scrub(%{email: email, name: name, avatar_url: avatar_url}))
+    |> User.registration_changeset(changeset)
     |> repo.insert
     case result do
       {:ok, user} -> user

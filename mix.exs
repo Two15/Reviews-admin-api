@@ -33,7 +33,8 @@ defmodule ReviewMyCode.Mixfile do
       :oauth2,
       :phoenix,
       :phoenix_ecto,
-      :postgrex
+      :postgrex,
+      :tentacat
     ]
   end
 
@@ -45,7 +46,7 @@ defmodule ReviewMyCode.Mixfile do
   #
   # Type `mix help deps` for examples and options.
   defp deps do
-    [{:phoenix, "~> 1.2.0"},
+    [{:cowboy, "~> 1.0"},
      {:corsica, "~> 0.4"},
      {:credo, "~> 0.4", only: [:dev, :test]},
      # was ecto 2.0.2
@@ -54,9 +55,10 @@ defmodule ReviewMyCode.Mixfile do
      {:oauth2, "~> 0.6"},
      {:guardian, "~> 0.12.0"},
      {:guardian_db, "~> 0.7"},
+     {:phoenix, "~> 1.2.0"},
      {:phoenix_ecto, "~> 3.0"},
      {:postgrex, ">= 0.11.2", override: true},
-     {:cowboy, "~> 1.0"}]
+     {:tentacat, "~> 0.5"}]
   end
 
   # Aliases are shortcut or tasks specific to the current project.

@@ -43,12 +43,19 @@ defmodule ReviewMyCode.AuthController do
       {:ok, user} ->
         new_conn = Guardian.Plug.api_sign_in(conn, user, :token, perms: %{default: Guardian.Permissions.max})
         jwt = Guardian.Plug.current_token(new_conn)
-
         new_conn
-        |> json(%{access_token: jwt})
+        |> json(%{access_token: jwt, user: serialize_user(user, payload)})
       {:error, reason} ->
         conn
         |> json(%{"errors": [reason]})
     end
+  end
+
+  defp serialize_user(user, auth) do
+    user = user
+    |> Map.take([:name, :avatar_url])
+    auth
+    |> Map.take([:provider, :uid])
+    |> Map.merge(user)
   end
 end

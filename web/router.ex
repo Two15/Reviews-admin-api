@@ -44,5 +44,12 @@ defmodule ReviewMyCode.Router do
     pipe_through [:api, :api_auth]
 
     get "/", PingController, :ping
+
+    scope "/repos" do
+      pipe_through [:api, :api_auth]
+
+      get "/", RepositoryController, :index
+    end
   end
+
 end
