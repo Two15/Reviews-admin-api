@@ -9,14 +9,33 @@ defmodule ReviewMyCode.RepositoryController do
     token = user
     |> User.auth_for(:github)
     |> Map.get(:token)
-    response = Tentacat.Client.new(%{access_token: token})
-    |> Tentacat.Organizations.list_mine
+    handle(conn, fetch_repos(token))
+  end
+
+  def index_org(conn, %{"org"=> org}, user, _claims) do
+    %{:token => token, :uid => uid} = user
+    |> User.auth_for(:github)
+    response = case org do
+      _ when org == uid -> fetch_repos(token)
+      _ -> fetch_repos(token, org)
+    end
     handle(conn, response)
+  end
+
+  defp fetch_repos(token) do
+    response = Tentacat.Client.new(%{access_token: token})
+    |> Tentacat.Repositories.list_mine
+  end
+
+  defp fetch_repos(token, org) do
+    client = Tentacat.Client.new(%{access_token: token})
+    Tentacat.Repositories.list_orgs(org, client)
   end
 
   defp handle(conn, {status, error}) do
     conn
-    |> send_resp(403 , error)
+    |> put_status(403)
+    |> json(error)
   end
 
   defp handle(conn, response) do
