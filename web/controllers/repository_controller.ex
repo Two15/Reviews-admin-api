@@ -23,8 +23,8 @@ defmodule ReviewMyCode.RepositoryController do
   end
 
   defp fetch_repos(token) do
-    response = Tentacat.Client.new(%{access_token: token})
-    |> Tentacat.Repositories.list_mine
+    Tentacat.Client.new(%{access_token: token})
+    |> Tentacat.Repositories.list_mine()
   end
 
   defp fetch_repos(token, org) do
@@ -32,7 +32,7 @@ defmodule ReviewMyCode.RepositoryController do
     Tentacat.Repositories.list_orgs(org, client)
   end
 
-  defp handle(conn, {status, error}) do
+  defp handle(conn, {_status, error}) do
     conn
     |> put_status(403)
     |> json(error)
