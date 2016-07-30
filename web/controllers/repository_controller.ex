@@ -25,11 +25,19 @@ defmodule ReviewMyCode.RepositoryController do
   defp fetch_repos(token) do
     Tentacat.Client.new(%{access_token: token})
     |> Tentacat.Repositories.list_mine()
+    |> Enum.map(&scrub_repo(&1))
   end
 
   defp fetch_repos(token, org) do
     client = Tentacat.Client.new(%{access_token: token})
     Tentacat.Repositories.list_orgs(org, client)
+    |> Enum.map(&scrub_repo(&1))
+  end
+
+  defp scrub_repo(org) do
+    { %{ "avatar_url"=> avatar_url}, org } = Map.take(org, ["id", "owner", "full_name"])
+    |> Map.get_and_update("owner", fn(v)-> :pop end);
+    Map.put(org, "avatar_url", avatar_url)
   end
 
   defp handle(conn, {_status, error}) do
