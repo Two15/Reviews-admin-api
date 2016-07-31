@@ -52,6 +52,16 @@ config :guardian_db, GuardianDb,
   repo: ReviewMyCode.Repo,
   sweep_interval: 60 # 60 minutes
 
+config :reviewMyCode, :github,
+  name: "web",
+  active: true,
+  events: [ "pull_request", "issue_comment", "issues"],
+  config: %{
+    content_type: "json",
+    url: "http://localhost:8080",
+    insecure_ssl: "1"
+  }
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{Mix.env}.exs"

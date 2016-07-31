@@ -26,27 +26,30 @@ defmodule ReviewMyCode.RepositoryController do
   def status(conn, %{"owner"=> owner, "name"=> name}, _user, _claims) do
     ref = %{ owner: owner, name: name, provider: "github" }
     value = case Repository.find_by_reference(ref, Repo) do
-      {:ok, repo} -> repo.enabled
-      _ -> false
+      nil -> false
+      repo -> repo.enabled
     end
     conn
-    |> json(%{status: value})
+    |> json(%{enabled: value})
   end
 
-  def create_status(conn, %{"name"=> name, "owner"=> owner, "provider"=> provider}, user, _claims) do
+  def create_status(conn, %{"name"=> name, "owner"=> owner, "provider"=> provider, "enabled"=> enabled}, user, _claims) do
     %{:token => token} = user
     |> User.auth_for(String.to_atom(provider))
+
     ref = %{ owner: owner, name: name, provider: provider }
+    changeset = Map.put(ref, :enabled, enabled )
     result = case Repository.find_by_reference(ref, Repo) do
-      nil -> %Repository{name: name, owner: owner, provider: provider}
+      nil -> %Repository{}
       repo -> repo
     end
-    |> Repository.changeset(ref)
+    |> Repository.changeset(changeset)
     |> Repo.insert_or_update
     case result do
       {:ok, repo} ->
+        # TODO Delete the webhook
         create_webhook(token, repo)
-        conn |> send_resp(204, "")
+        conn |> json(%{ enabled: repo.enabled })
       {:error, _} -> conn |> send_resp(400, "")
     end
   end
@@ -54,17 +57,9 @@ defmodule ReviewMyCode.RepositoryController do
   defp create_webhook(token, repo) do
     client = Tentacat.Client.new(%{access_token: token})
     # FIXME This is a dev config, move to config.exs
-    config = %{
-      "name" => "web",
-      "active" => true,
-      "events" => [ "pull_request", "issue_comment", "issues"],
-      "config" => %{
-        "content_type" => "json",
-        "url"=> "http://localhost:8080",
-        "insecure_ssl"=> "1",
-        "secret"=> repo.id
-      }
-    }
+    config = Application.fetch_env!(:reviewMyCode, String.to_atom(repo.provider))
+    |> Enum.into(%{})
+    |> Map.put(:secret, repo.id)
     Tentacat.Hooks.create(repo.owner, repo.name, config, client)
     # TODO Save hook ID in the DB
   end

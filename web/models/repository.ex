@@ -13,10 +13,11 @@ defmodule ReviewMyCode.Repository do
   end
 
   @required_fields ~w(provider name owner)a
+  @optional_fields ~w(enabled)a
 
   def changeset(model, params \\ :empty) do
     model
-    |> cast(params, @required_fields)
+    |> cast(params, @required_fields ++ @optional_fields)
     |> validate_required(@required_fields)
   end
 
