@@ -47,6 +47,9 @@ defmodule ReviewMyCode.Router do
     get "/orgs", OrganizationController, :index
     get "/repos", RepositoryController, :index
     get "/repos/:org", RepositoryController, :index_org
+
+    get "/status/:owner/:name", RepositoryController, :status
+    post "/status", RepositoryController, :create_status
   end
 
 end

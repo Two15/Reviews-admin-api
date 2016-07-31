@@ -16,7 +16,7 @@ defmodule ReviewMyCode.OrganizationController do
 
   defp scrub_org(org) do
     { uid, org } = Map.take(org, ["avatar_url", "login"])
-    |> Map.get_and_update("login", fn(v)-> :pop end);
+    |> Map.get_and_update("login", fn(_v)-> :pop end);
     Map.put(org, "uid", uid)
   end
 
