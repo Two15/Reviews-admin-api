@@ -8,6 +8,7 @@ defmodule ReviewMyCode.Repo.Migrations.AddRepositoryTable do
       add :name, :string
       add :owner, :string
       add :enabled, :boolean, default: true
+      add :webhook_id, :string
 
       timestamps
     end

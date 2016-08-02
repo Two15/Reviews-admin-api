@@ -33,35 +33,65 @@ defmodule ReviewMyCode.RepositoryController do
     |> json(%{enabled: value})
   end
 
-  def create_status(conn, %{"name"=> name, "owner"=> owner, "provider"=> provider, "enabled"=> enabled}, user, _claims) do
-    %{:token => token} = user
-    |> User.auth_for(String.to_atom(provider))
+  def create_webhook(conn, %{"name"=> name, "owner"=> owner, "provider"=> provider}, user, _claims) do
+    update_webhook(conn, user, name, owner, provider, true)
+  end
+
+  def delete_webhook(conn, %{"name"=> name, "owner"=> owner, "provider"=> provider}, user, _claims) do
+    update_webhook(conn, user, name, owner, provider, false)
+  end
+
+  defp update_webhook(conn, user, name, owner, provider, enabled) do
+    token = User.token_for(user, provider)
 
     ref = %{ owner: owner, name: name, provider: provider }
-    changeset = Map.put(ref, :enabled, enabled )
-    result = case Repository.find_by_reference(ref, Repo) do
-      nil -> %Repository{}
+    changeset = case Repository.find_by_reference(ref, Repo) do
+      nil -> %Repository{ id: Ecto.UUID.generate }
       repo -> repo
     end
-    |> Repository.changeset(changeset)
-    |> Repo.insert_or_update
+    |> Repository.changeset(Map.merge(ref, %{enabled: enabled}))
+
+    webhook = case changeset.data.webhook_id do
+      nil -> create_github_webhook(token, changeset.data.id, ref, enabled)
+      id -> update_github_webhook(token, id, changeset.data.id, ref, enabled)
+    end
+    webhook_id = case webhook do
+      %{"id"=> webhook_id} -> {:ok, to_string(webhook_id)}
+      {201, %{"id"=> webhook_id}} -> {:ok, to_string(webhook_id)}
+      {422, reason} -> {:error, "Could not create webhook"}
+    end
+    result = case webhook_id do
+      {:ok, id} ->
+        changeset
+        |> Ecto.Changeset.cast(%{webhook_id: id}, [:webhook_id])
+        |> Repo.insert_or_update
+      any -> any
+    end
     case result do
       {:ok, repo} ->
-        # TODO Delete the webhook
-        create_webhook(token, repo)
         conn |> json(%{ enabled: repo.enabled })
-      {:error, _} -> conn |> send_resp(400, "")
+      {:error, msg} -> conn |> put_status(400) |> json(msg)
+      _ -> conn |> send_resp(500, "Unknown error")
     end
   end
 
-  defp create_webhook(token, repo) do
+  defp create_github_webhook(token, secret, repo, enabled) do
     client = Tentacat.Client.new(%{access_token: token})
-    # FIXME This is a dev config, move to config.exs
     config = Application.fetch_env!(:reviewMyCode, String.to_atom(repo.provider))
     |> Enum.into(%{})
-    |> Map.put(:secret, repo.id)
+    |> Map.merge(%{active: enabled})
+    config = Map.put(config.config, "secret", secret)
     Tentacat.Hooks.create(repo.owner, repo.name, config, client)
-    # TODO Save hook ID in the DB
+  end
+
+  defp update_github_webhook(token, id, secret, repo, enabled) do
+    client = Tentacat.Client.new(%{access_token: token})
+    config = Application.fetch_env!(:reviewMyCode, String.to_atom(repo.provider))
+    |> Enum.into(%{})
+    |> Map.merge(%{active: enabled})
+    config = Map.put(config, "config", Map.put(config.config, "secret", secret))
+    |> IO.inspect
+    Tentacat.Hooks.update(repo.owner, repo.name, id, config, client)
   end
 
   defp fetch_repos(token) do

@@ -39,4 +39,10 @@ defmodule ReviewMyCode.User do
     user.authorizations
     |> Enum.find(fn(%{ provider: prov })-> prov == to_string(provider) end)
   end
+
+  def token_for(user, provider) do
+    user
+    |> __MODULE__.auth_for(provider)
+    |> Map.get(:token)
+  end
 end

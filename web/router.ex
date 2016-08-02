@@ -49,7 +49,8 @@ defmodule ReviewMyCode.Router do
     get "/repos/:org", RepositoryController, :index_org
 
     get "/status/:owner/:name", RepositoryController, :status
-    put "/status", RepositoryController, :create_status
+    post "/status", RepositoryController, :create_webhook
+    delete "/status", RepositoryController, :delete_webhook
   end
 
 end
