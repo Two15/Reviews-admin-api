@@ -49,7 +49,7 @@ defmodule ReviewMyCode.Router do
     get "/repos/:org", RepositoryController, :index_org
 
     get "/status/:owner/:name", RepositoryController, :status
-    post "/status", RepositoryController, :create_webhook
+    put "/status", RepositoryController, :create_webhook
     delete "/status", RepositoryController, :delete_webhook
   end
 
