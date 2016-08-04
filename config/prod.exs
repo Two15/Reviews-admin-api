@@ -68,3 +68,14 @@ config :reviewMyCode, ReviewMyCode.Repo,
   url: System.get_env("DATABASE_URL"),
   pool_size: String.to_integer(System.get_env("POOL_SIZE") || "20"),
   ssl: true
+
+config :reviewMyCode, :github,
+  name: "web",
+  active: true,
+  events: [ "pull_request", "issue_comment", "issues"],
+  config: %{
+    content_type: "json",
+    url: "https://pure-escarpment-50842.herokuapp.com",
+    insecure_ssl: "0"
+  }
+
