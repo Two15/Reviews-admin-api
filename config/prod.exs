@@ -69,6 +69,12 @@ config :reviewMyCode, ReviewMyCode.Repo,
   pool_size: String.to_integer(System.get_env("POOL_SIZE") || "20"),
   ssl: true
 
+config :oauth2, ReviewMyCode.OAuth,
+  client_id: System.get_env("GITHUB_CLIENT_ID"),
+  client_secret: System.get_env("GITHUB_CLIENT_SECRET"),
+  redirect_uri: "https://admin.review.two15.co/login/response",
+  default_scope: "user:email,repo,write:repo_hook,notifications,read:org"
+
 config :reviewMyCode, :github,
   name: "web",
   active: true,
