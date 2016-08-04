@@ -14,7 +14,7 @@ use Mix.Config
 config :reviewMyCode, ReviewMyCode.Endpoint,
   http: [port: {:system, "PORT"}],
   url: [host: "api.review.two15.co", port: 443],
-  force_ssl: [rewrite_on: [:x_forwarded_proto]],
+  force_ssl: [hsts: true, rewrite_on: [:x_forwarded_proto]],
   secret_key_base: System.get_env("SECRET_KEY_BASE")
 
 # Do not print debug messages in production
