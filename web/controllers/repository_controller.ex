@@ -58,7 +58,7 @@ defmodule ReviewMyCode.RepositoryController do
     webhook_id = case webhook do
       %{"id"=> webhook_id} -> {:ok, to_string(webhook_id)}
       {201, %{"id"=> webhook_id}} -> {:ok, to_string(webhook_id)}
-      {422, reason} -> {:error, "Could not create webhook"}
+      {422, reason} -> {:error, %{errors: [%{status: 422, title: "Could not create webhook", meta: reason}]}}
     end
     result = case webhook_id do
       {:ok, id} ->
