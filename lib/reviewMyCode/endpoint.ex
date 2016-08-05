@@ -9,7 +9,7 @@ defmodule ReviewMyCode.Endpoint do
 
   plug Plug.RequestId
   plug Plug.Logger
-  plug Corsica, origins: "http://localhost:4200", allow_headers: ~w(accept authorization content-type)
+  plug Corsica, Application.get_env(:reviewMyCode, :corsica)
 
   plug Plug.Parsers,
     parsers: [:json],

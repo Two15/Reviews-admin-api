@@ -85,3 +85,6 @@ config :reviewMyCode, :github,
     insecure_ssl: "0"
   }
 
+config :reviewMyCode, :corsica,
+  origins: "https://admin.review.two15.co",
+  allow_headers: ~w(accept authorization content-type)
