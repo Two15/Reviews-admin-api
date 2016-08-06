@@ -3,6 +3,7 @@ defmodule ReviewMyCode.Router do
   Defines the routes of the API
   """
   use ReviewMyCode.Web, :router
+  use ExSentry.Plug
 
   pipeline :api do
     plug :accepts, ["json"]

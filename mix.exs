@@ -29,6 +29,7 @@ defmodule ReviewMyCode.Mixfile do
     [
       :cowboy,
       :ecto,
+      :exsentry,
       :logger,
       :oauth2,
       :phoenix,
@@ -52,6 +53,7 @@ defmodule ReviewMyCode.Mixfile do
      # was ecto 2.0.2
      {:ecto, github: "elixir-ecto/ecto", ref: "c89754c65678", override: true},
      {:ex_machina, "~>0.6", only: [:dev, :test]},
+     {:exsentry, "~> 0.6.2"},
      {:oauth2, "~> 0.6"},
      {:guardian, "~> 0.12.0"},
      {:guardian_db, "~> 0.7"},

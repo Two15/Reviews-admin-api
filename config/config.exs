@@ -62,9 +62,11 @@ config :reviewMyCode, :github,
     insecure_ssl: "1"
   }
 
-  config :reviewMyCode, :corsica,
-    origins: "http://localhost:4200",
-    allow_headers: ~w(accept authorization content-type)
+config :reviewMyCode, :corsica,
+  origins: "http://localhost:4200",
+  allow_headers: ~w(accept authorization content-type)
+
+config :exsentry, dsn: "" #An empty DSN disables ExSentry
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

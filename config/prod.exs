@@ -88,3 +88,5 @@ config :reviewMyCode, :github,
 config :reviewMyCode, :corsica,
   origins: "https://admin.review.two15.co",
   allow_headers: ~w(accept authorization content-type)
+
+config :exsentry, dsn: System.get_env("SENTRY_DSN")

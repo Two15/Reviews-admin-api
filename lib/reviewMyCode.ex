@@ -9,6 +9,7 @@ defmodule ReviewMyCode do
     # for other strategies and supported options
     opts = [strategy: :one_for_one, name: ReviewMyCode.Supervisor]
     Supervisor.start_link(children(Mix.env), opts)
+    Logger.add_backend(ExSentry.LoggerBackend)
   end
 
   # Tell Phoenix to update the endpoint configuration
