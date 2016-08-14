@@ -80,8 +80,7 @@ defmodule ReviewMyCode.RepositoryController do
     config = Application.fetch_env!(:reviewMyCode, String.to_atom(repo.provider))
     |> Enum.into(%{})
     |> Map.merge(%{active: enabled})
-    config2 = Map.put(config.config, "secret", secret)
-    Map.put(config, "config", config2)
+    config = Map.put(config, "config", Map.put(config.config, "secret", secret))
     Tentacat.Hooks.create(repo.owner, repo.name, config, client)
   end
 
