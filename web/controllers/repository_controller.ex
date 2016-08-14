@@ -90,7 +90,12 @@ defmodule ReviewMyCode.RepositoryController do
     |> Enum.into(%{})
     |> Map.merge(%{active: enabled})
     config = Map.put(config, "config", Map.put(config.config, "secret", secret))
-    Tentacat.Hooks.update(repo.owner, repo.name, id, config, client)
+
+    # Create token if it has been deleted from Github
+    case Tentacat.Hooks.update(repo.owner, repo.name, id, config, client) do
+      {404, _} -> create_github_webhook(token, secret, repo, enabled)
+      any -> any
+    end
   end
 
   defp fetch_repos(token) do
