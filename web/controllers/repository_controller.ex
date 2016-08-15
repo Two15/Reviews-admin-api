@@ -13,16 +13,6 @@ defmodule ReviewMyCode.RepositoryController do
     handle(conn, fetch_repos(token))
   end
 
-  def index_org(conn, %{"org"=> org}, user, _claims) do
-    %{:token => token, :uid => uid} = user
-    |> User.auth_for(:github)
-    response = case org do
-      _ when org == uid -> fetch_repos(token)
-      _ -> fetch_repos(token, org)
-    end
-    handle(conn, response)
-  end
-
   def status(conn, %{"owner"=> owner, "name"=> name}, _user, _claims) do
     ref = %{ owner: owner, name: name, provider: "github" }
     value = case Repository.find_by_reference(ref, Repo) do
@@ -101,12 +91,6 @@ defmodule ReviewMyCode.RepositoryController do
   defp fetch_repos(token) do
     Tentacat.Client.new(%{access_token: token})
     |> Tentacat.Repositories.list_mine()
-    |> Enum.map(&scrub_repo(&1))
-  end
-
-  defp fetch_repos(token, org) do
-    client = Tentacat.Client.new(%{access_token: token})
-    Tentacat.Repositories.list_orgs(org, client)
     |> Enum.map(&scrub_repo(&1))
   end
 
