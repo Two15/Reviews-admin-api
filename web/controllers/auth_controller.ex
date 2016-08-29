@@ -53,7 +53,7 @@ defmodule ReviewMyCode.AuthController do
 
   defp serialize_user(user, auth) do
     user = user
-    |> Map.take([:name, :avatar_url])
+    |> Map.take([:name, :avatar_url, :email])
     auth
     |> Map.take([:provider, :uid])
     |> Map.merge(user)
