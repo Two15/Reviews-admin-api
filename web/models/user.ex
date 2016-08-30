@@ -13,8 +13,8 @@ defmodule ReviewMyCode.User do
     timestamps
   end
 
-  @required_fields ~w(email name)a
-  @optional_fields ~w(avatar_url)a
+  @required_fields ~w(name)a
+  @optional_fields ~w(email avatar_url)a
 
   def registration_changeset(model, params \\ :empty) do
     model
@@ -32,7 +32,7 @@ defmodule ReviewMyCode.User do
     model
     |> cast(params, @required_fields ++ @optional_fields)
     |> validate_required(@required_fields)
-    |> validate_format(:email, ~r/@/)
+    # |> validate_format(:email, ~r/@/)
   end
 
   def auth_for(user, provider) do

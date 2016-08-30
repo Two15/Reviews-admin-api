@@ -46,7 +46,7 @@ config :oauth2, ReviewMyCode.OAuth,
   client_id: System.get_env("GITHUB_CLIENT_ID"),
   client_secret: System.get_env("GITHUB_CLIENT_SECRET"),
   redirect_uri: "http://localhost:4200/login/response",
-  default_scope: "user:email,repo,write:repo_hook,notifications,read:org"
+  default_scope: "user:email,repo,write:repo_hook,read:org"
 
 config :guardian_db, GuardianDb,
   repo: ReviewMyCode.Repo,

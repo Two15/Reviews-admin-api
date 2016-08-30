@@ -34,12 +34,18 @@ defmodule ReviewMyCode.UserFromAuth do
 
   defp create_user_from_auth(auth, repo) do
     email = Map.get(auth.info, "email")
-    user = case repo.get_by(User, email: email) do
+    user = get_or_create_user(email, auth, repo)
+    authorization_from_auth(user, auth, repo)
+    {:ok, user}
+  end
+
+  defp get_or_create_user(nil, auth, repo), do: create_user(auth, repo)
+
+  defp get_or_create_user(email, auth, repo) do
+    case repo.get_by(User, email: email) do
       nil -> create_user(auth, repo)
       user -> user
     end
-    authorization_from_auth(user, auth, repo)
-    {:ok, user}
   end
 
   defp create_user(%{"info": info}, repo) do
