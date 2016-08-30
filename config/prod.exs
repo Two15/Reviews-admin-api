@@ -73,7 +73,7 @@ config :oauth2, ReviewMyCode.OAuth,
   client_id: System.get_env("GITHUB_CLIENT_ID"),
   client_secret: System.get_env("GITHUB_CLIENT_SECRET"),
   redirect_uri: "https://admin.review.two15.co/login/response",
-  default_scope: "user:email,repo,write:repo_hook,notifications,read:org"
+  default_scope: "user:email,repo,write:repo_hook,read:org"
 
 config :reviewMyCode, :github,
   name: "web",
